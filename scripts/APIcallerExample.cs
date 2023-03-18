@@ -52,13 +52,7 @@ public class APIcallerExample : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    //Gets input wallet
     public void clickTest()
     {
         if (InputField.text == "")
@@ -76,7 +70,7 @@ public class APIcallerExample : MonoBehaviour
         
 
     }
-
+    //Fetch TzKT data and wait for it before parsing
     public void APIcall(string walletAddress, string contractAddres)
     {
         StartCoroutine(GetData(walletAddress, contractAddres));
@@ -102,24 +96,26 @@ public class APIcallerExample : MonoBehaviour
             }
         }
     }
+    //Organizes the data into an array of Token that unity can easily read. Call for your game's inventory function when tokens 
     IEnumerator ParseData()
     {
         while (!gotContent)
         {
             yield return null;
         }
+        //Most of the magic is this, delve into JsonHelper for more 
         TokenList = JsonHelper.FromJson<Token>(fixJson(fullJson));
         show.text = "";
         for(int i = 0; i < TokenList.Length; i++)
         {
-            Debug.Log(TokenList[i].tokenId + " " + TokenList[i].Balance);
-            show.text += TokenList[i].tokenId + " - " + TokenList[i].Balance + "    ";
+            Debug.Log(TokenList[i].tokenId + " - " + TokenList[i].Balance);
+            show.text += TokenList[i].tokenId + " - " + TokenList[i].Balance + "\n";
         }
 
         Debug.Log(TokenList.Length + " tokens found");
         
     }
-
+    //Adding some needed json syntax to make them read as an array
     string fixJson(string value)
     {
         value = "{\"Items\":" + value + "}";
